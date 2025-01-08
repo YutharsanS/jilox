@@ -7,9 +7,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Scanner;
 
 public class Lox {
+    static boolean hadError = false; // Error flag
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
             System.out.println("Usage: jlox [script]");
@@ -24,6 +24,10 @@ public class Lox {
     private static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path)); // reading into a byte array
         run(new String(bytes, Charset.defaultCharset())); // makes everything into a single string and runs
+
+        // Indicate an error in the exit code
+        if (hadError)
+            System.exit(65);
     }
 
     private static void runPrompt() throws IOException {
@@ -37,6 +41,7 @@ public class Lox {
                 break;
             // reads until an empty line occurs, and interactively executes everything
             run(line);
+            hadError = false; // resets the error in order to prevent it from terminating from entire session
         }
     }
 
@@ -48,5 +53,15 @@ public class Lox {
         for (Token token : tokens) {
             System.out.println(token);
         }
+    }
+
+    static void error(int line, String message) {
+        // reports the error line and the message
+        report(line, "", message);
+    }
+
+    private static void report(int line, String where, String message) {
+        System.err.println("[line " + line + "] Error" + where + ": " + message);
+        hadError = true;
     }
 }
