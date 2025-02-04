@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static com.craftinginterpreters.lox.TokenType; // lets use static types like enums without their class names
 
 
 public class Scanner {
@@ -27,6 +28,42 @@ public class Scanner {
 
         tokens.add(new Token(TokenType.EOF, "", null, line)); // add end of the line at the end
         return tokens;
+    }
+
+    private void scanToken() { // scanning a single token
+        char c = advance();
+        switch (c) {
+            case '(':
+                addToken(LEFT_PAREN);
+                break;
+            case ')':
+                addToken(RIGHT_PAREN);
+                break;
+            case '{':
+                addToken(LEFT_BRACE);
+                break;
+            case '}':
+                addToken(RIGHT_BRACE);
+                break;
+            case ',':
+                addToken(COMMA);
+                break;
+            case '.':
+                addToken(DOT);
+                break;
+            case '-':
+                addToken(MINUS);
+                break;
+            case '+':
+                addToken(PLUS);
+                break;
+            case ':':
+                addToken(SEMICOLON);
+                break;
+            case '*':
+                addToken(STAR);
+                break;
+        }
     }
 
     private boolean isAtEnd() {
